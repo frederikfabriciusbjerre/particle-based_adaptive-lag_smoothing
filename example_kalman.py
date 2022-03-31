@@ -4,12 +4,13 @@ from sklearn.metrics import mean_squared_error
 from matplotlib import pyplot as plt
 from kalman_filter_and_smoothers.kalman_smoother_information_param import kalman_smoother
 from kalman_filter_and_smoothers.kalman_als import kalman_als
+
 # set parameters
 A = 0.95
 Q = 0.5
 H = 0.5
 R = 2
-T = 100
+T = 300
 
 # build hmm
 # gaussian transitions
@@ -45,5 +46,5 @@ plt.legend(loc = "best")
 plt.show()
 
 # print MSE
-print(mean_squared_error(mu_correct, mu_als))
+print(mean_squared_error(mu_correct[:200], mu_als[:200]))
 
