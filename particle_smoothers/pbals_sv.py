@@ -35,7 +35,7 @@ def rejection_sampling_sv(x, w, i, m, t, max_pdf, delta, phi):
     else:
         return S.astype(int)
     
-def pbals_sv(phi, sigma, beta, T, N, y, M, epsilon):
+def pbals_sv(phi, sigma, beta, T, N, M, delta, epsilon, y):
     """
     Offline implementation of Particle-Based Adaptive-Lag Smoother as seen in the article
     "Particle-Based Adaptive-Lag Online Marginal Smoothing in General State-Space Models"
@@ -52,7 +52,7 @@ def pbals_sv(phi, sigma, beta, T, N, y, M, epsilon):
     
     # calculate constant from gaussian pdf to optimize computing time
     # in rejection sampling step
-    a = np.exp(-1/(2 * (sigma**2)))
+    max_pdf = np.exp(-1/(2 * (sigma**2)))
 
     # noise
     U = np.random.normal(0, 1, size = (T + 1, N))
@@ -88,7 +88,7 @@ def pbals_sv(phi, sigma, beta, T, N, y, M, epsilon):
         w_sampling = w[t-1,:] / np.sum(w[t-1,:])
         for i in range(N):
             # find indicies for backwards indices
-            idx2 = rejection_sampling_sv(x, w_sampling, i, M, t, a, delta, phi)
+            idx2 = rejection_sampling_sv(x, w_sampling, i, M, t, max_pdf, delta, phi)
             
             # if indices are type None
             # calculate tau directly
@@ -101,7 +101,7 @@ def pbals_sv(phi, sigma, beta, T, N, y, M, epsilon):
             # calculate tau like in article
             else:     
                 for s in S:                    
-                    tau[s, t, i] = np.average(tau[s, t - 1, :][indices])
+                    tau[s, t, i] = np.average(tau[s, t - 1, :][idx2])
         
             # initialize tau
             tau[t, t, i] = x[t, i]

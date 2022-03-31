@@ -40,8 +40,8 @@ mu_pbalms = pbals_lg(A, Q, H, R, T, N, M, delta, epsilon, y)
 mu_correct = kalman_smoother(A, Q, H, R, T, y)
 
 # plot
-plt.plot(mu_pbalms[0:200], label = "pbalms")
-plt.plot(mu_correct[0:200], label = "kalman")
+plt.plot(mu_pbalms, label = "palms")
+plt.plot(mu_correct, label = "kalman")
 plt.xlabel('t')
 plt.ylabel('estimates')
 plt.legend(loc = "best")
