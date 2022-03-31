@@ -52,10 +52,10 @@ def kalman_als(A, sigma_u, H, sigma_v, T, epsilon, y):
     estimate = np.zeros(shape = T+1)
     
     # as filter takes variance as input:
-    sigma_u = sigma_u * sigma_u
-    sigma_v = sigma_v * sigma_v
+    sigma_u_sq = sigma_u * sigma_u
+    sigma_v_sq = sigma_v * sigma_v
     
-    (filter_mu, filter_sigma) = kalman_filter(A, sigma_u, H, sigma_v, T, y)
+    (filter_mu, filter_sigma) = kalman_filter(A, sigma_u_sq, H, sigma_v_sq, T, y)
     
     tau[0,0] = y[0]
     for i in range(0, T+1):
