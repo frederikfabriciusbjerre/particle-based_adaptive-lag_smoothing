@@ -1,3 +1,5 @@
+import numpy as np
+
 # made by Niels Richard Hansen, University of Copenhagen
 
 def J_diag(A, Q, H, R, T):
@@ -62,6 +64,6 @@ def kalman_smoother(A, Q, H, R, T, y):
     h = h_vec(y, H, R)
     (J_f, h_f) = forward(J, h, A, Q)
     (J_b, h_b) = backward(J, h, A, Q)
-    Sigma = 1  (J + J_f + J_b)
+    Sigma = 1 /  (J + J_f + J_b)
     mu = Sigma * (h + h_f + h_b)
     return mu

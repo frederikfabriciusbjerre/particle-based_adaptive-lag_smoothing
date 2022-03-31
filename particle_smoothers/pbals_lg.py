@@ -1,7 +1,7 @@
 import numpy as np
 import scipy.stats as stats
 
-def rejection_sampling_lg(x, w, i, m, t, max_pdf, delta):
+def rejection_sampling_lg(x, w, i, m, t, max_pdf, A, delta):
     """
     Rejection sampling for linear Gaussian HMM
     """
@@ -35,7 +35,7 @@ def rejection_sampling_lg(x, w, i, m, t, max_pdf, delta):
     else:
         return S.astype(int)
     
-def pbals_lg(A, sigma_u, H, sigma_v, T, N, y, M, delta, epsilon):
+def pbals_lg(A, sigma_u, H, sigma_v, T, N, M, delta, epsilon, y):
     
     """
     Offline implementation of Particle-Based Adaptive-Lag Smoother as seen in the article
@@ -53,7 +53,7 @@ def pbals_lg(A, sigma_u, H, sigma_v, T, N, y, M, delta, epsilon):
     
     # calculate constant from gaussian pdf to optimize computing time
     # in rejection sampling step
-    a = np.exp(-1/(2 * (sigma_u**2)))
+    max_pdf = np.exp(-1/(2 * (sigma_u**2)))
     
     # noise
     U = np.random.normal(0, 1, size = (T + 1, N))
@@ -87,7 +87,7 @@ def pbals_lg(A, sigma_u, H, sigma_v, T, N, y, M, delta, epsilon):
         for i in range(N):
             
             # find indices
-            indices = rejection_sampling_lg_improved(x, w_sampling, i, M, t, a, delta)
+            indices = rejection_sampling_lg(x, w_sampling, i, M, t, max_pdf, A, delta)
             
             # if indices are type None
             # calculate tau directly
@@ -119,7 +119,7 @@ def pbals_lg(A, sigma_u, H, sigma_v, T, N, y, M, delta, epsilon):
             if sigma_estimate < epsilon:
                 
                 # calculate output
-                estimate[s] = np.sum(np.multiply((w[t, :]/W), tau[s, t, :]))
+                estimate[s] = np.sum(np.multiply((w[t, :]), tau[s, t, :]))
                 
                 # remove estimator from active estimators
                 S = np.setdiff1d(S, s)
