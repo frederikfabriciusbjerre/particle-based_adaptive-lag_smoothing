@@ -1,3 +1,5 @@
+import numpy as np
+
 # kalman filter algorithm is made by Niels Richard Hansen, University of Copenhagen
 
 def kalman_filter(A, Q, H, R, T, x):
@@ -28,6 +30,17 @@ def kalman_filter(A, Q, H, R, T, x):
 
 
 def kalman_als(A, sigma_u, H, sigma_v, T, epsilon, y):
+    """
+    Kalman filter version of the Adaptive-Lag Smoother as seen in the article
+    "Particle-Based Adaptive-Lag Online Marginal Smoothing in General State Space Models"
+    working for a linear Gaussian HMM / SSM build like so:
+    
+    Z_t = A * Z_{t-1} + Q * U_t
+    Y_t = H * Z_t + R * V_t
+
+    where U and V are standard Gaussian variables.
+    Note that the estimates will become less precise as we approach the end of sequence.
+    """
     # initialize alpha, beta, mu, T_s|t, and sigma
     alpha = np.zeros(shape = (T+1,T+1)) 
     beta = np.zeros(shape = (T+1,T+1))
@@ -89,5 +102,10 @@ def kalman_als(A, sigma_u, H, sigma_v, T, epsilon, y):
             if t != T:             
                 alpha[s,t+1] = alpha[s,t] * sigma[t, t+1] * A * (1/sigma_u)
                 beta[s,t+1]  = alpha[s,t] * sigma[t, t+1] * A * (1/sigma_t) * mu_t + beta[s,t]
-                
+
+        # if S is not empty after last iteration 
+        if len(S) > 0:
+            for s in S:
+                s = s.astype(int)
+                estimate[s] = tau[s,t]
     return estimate
