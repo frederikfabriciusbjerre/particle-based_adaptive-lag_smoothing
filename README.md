@@ -28,12 +28,14 @@ To test this method against a Kalman smoother, see `example_kalman.py`
 The particle filter method will not be explained in depth here, but was based on the presentation of the algorithm made in the book "Computational Statistics" by Givens and Hoeting. It is made to work on the linear Gaussian HMM from above and a stochastic Volatility model with the following structure:
 
 ```math
-Z_{t+1} = \gamma * Z_t + \sigma *  U_{t+1} \\
+Z_{t+1} = \phi * Z_t + \sigma *  U_{t+1} \\
 Y_{t} = \beta * exp(X_{t}/2)V_{t}
 ```
 again where $`U, V`$ are standard Gaussian variables. Implementations can be found in `particle_filters`, and for a test of this method against a Kalman filter, see `example_pf.py`
 
 ### Particle-Based Adaptive-Lag Smoother
 This method is introduced in the article referred to in the beginning of the article. The implementations can be found in `particle_smoothers` and are made to work on a linear Gaussian HMM and a stochastic volatility model. (Here, _h_, is assumed to be the id function, if you read into the article.)
+
+As input it takes `epsilon` (as the Kalman Adaptive-Lag Smoother), but also `delta`, which also is a tolerance parameter, upper bounding the number of rejections in a rejection-based step in the algorithm. 
 
 To see tests of these methods, we refer to `example_lg.py` and `example_sv.py`. 
